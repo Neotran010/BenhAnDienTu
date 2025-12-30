@@ -94,10 +94,10 @@ public class DatabaseManager {
                     // Column already exists, this is expected and safe to ignore
                     return;
                 }
+                // Unexpected error, log it for debugging but don't crash
+                System.err.println("Warning: Could not add column " + columnName + 
+                                 " to table " + tableName + ": " + errorMsg);
             }
-            // Unexpected error, log it for debugging but don't crash
-            System.err.println("Warning: Could not add column " + columnName + 
-                             " to table " + tableName + ": " + errorMsg);
         }
     }
     

@@ -413,17 +413,17 @@ public class Frame2 extends JFrame {
                 
                 // Only apply shortcuts if it's a single digit
                 if (text.length() == 1 && Character.isDigit(text.charAt(0))) {
-                    switch (text) {
-                        case "1":
+                    switch (text.charAt(0)) {
+                        case '1':
                             field.setText(DOCTOR_1);
                             break;
-                        case "2":
+                        case '2':
                             field.setText(DOCTOR_2);
                             break;
-                        case "3":
+                        case '3':
                             field.setText(DOCTOR_3);
                             break;
-                        case "0":
+                        case '0':
                             field.setText(DEFAULT_DOCTOR);
                             break;
                     }
@@ -457,15 +457,17 @@ public class Frame2 extends JFrame {
             String gioNhapVien = patient.getGioNhapVien();
             if (gioNhapVien != null && !gioNhapVien.isEmpty()) {
                 // Parse format: "HH giờ mm phút"
-                int gioIndex = gioNhapVien.indexOf(" giờ");
-                int phutIndex = gioNhapVien.indexOf(" phút");
+                String gioStr = " giờ";
+                String phutStr = " phút";
+                int gioIndex = gioNhapVien.indexOf(gioStr);
+                int phutIndex = gioNhapVien.indexOf(phutStr);
                 
-                if (gioIndex > 0) {
+                if (gioIndex >= 0) {
                     String hour = gioNhapVien.substring(0, gioIndex).trim();
                     txtGioNhapVienHour.setText(hour);
                     
                     if (phutIndex > gioIndex) {
-                        String minute = gioNhapVien.substring(gioIndex + 5, phutIndex).trim();
+                        String minute = gioNhapVien.substring(gioIndex + gioStr.length(), phutIndex).trim();
                         txtGioNhapVienMinute.setText(minute);
                     }
                 }
