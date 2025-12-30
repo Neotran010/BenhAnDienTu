@@ -88,15 +88,16 @@ public class DatabaseManager {
             // It returns a general SQL error with message containing "duplicate"
             // This is safe to ignore as it means the column already exists
             String errorMsg = e.getMessage();
-            if (errorMsg != null && 
-                (errorMsg.toLowerCase().contains("duplicate") || 
-                 errorMsg.toLowerCase().contains("already exists"))) {
-                // Column already exists, this is expected and safe to ignore
-            } else {
-                // Unexpected error, log it for debugging but don't crash
-                System.err.println("Warning: Could not add column " + columnName + 
-                                 " to table " + tableName + ": " + errorMsg);
+            if (errorMsg != null) {
+                String lowerMsg = errorMsg.toLowerCase();
+                if (lowerMsg.contains("duplicate") || lowerMsg.contains("already exists")) {
+                    // Column already exists, this is expected and safe to ignore
+                    return;
+                }
             }
+            // Unexpected error, log it for debugging but don't crash
+            System.err.println("Warning: Could not add column " + columnName + 
+                             " to table " + tableName + ": " + errorMsg);
         }
     }
     

@@ -363,6 +363,13 @@ public class Frame2 extends JFrame {
      * 
      * @param year The year value (either 2 or 4 digits)
      * @return The year as 4 digits
+     * 
+     * Examples:
+     * - 25 -> 2025
+     * - 49 -> 2049
+     * - 50 -> 1950
+     * - 90 -> 1990
+     * - 2025 -> 2025 (unchanged)
      */
     private int convertTwoDigitYear(int year) {
         if (year < 100) {
@@ -585,7 +592,7 @@ public class Frame2 extends JFrame {
         
         // Also save to vitalSigns for backward compatibility
         // Only include non-empty values
-        java.util.List<String> vitalsList = new java.util.ArrayList<>();
+        List<String> vitalsList = new ArrayList<>();
         if (!txtMach.getText().trim().isEmpty()) {
             vitalsList.add(txtMach.getText().trim());
         }
