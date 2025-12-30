@@ -40,3 +40,6 @@ desktop.ini
 *.bak
 *.swp
 *~
+
+# Test files
+src/main/java/com/benhan/test/

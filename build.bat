@@ -21,9 +21,11 @@ if %errorlevel% equ 0 (
     jar cvfe ..\BenhAnDienTu.jar com.benhan.BenhAnDienTu com/benhan/*.class com/benhan/models/*.class com/benhan/database/*.class com/benhan/ui/*.class
     cd ..
     
-    REM Extract SQLite JDBC into bin
+    REM Extract SQLite JDBC and SLF4J into bin
     cd bin
     jar xf ..\lib\sqlite-jdbc-3.45.0.0.jar
+    jar xf ..\lib\slf4j-api-2.0.9.jar
+    jar xf ..\lib\slf4j-simple-2.0.9.jar
     if exist META-INF rmdir /s /q META-INF
     cd ..
     

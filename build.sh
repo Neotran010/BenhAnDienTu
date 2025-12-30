@@ -21,9 +21,11 @@ if [ $? -eq 0 ]; then
     jar cvfe ../BenhAnDienTu.jar com.benhan.BenhAnDienTu com/benhan/*.class com/benhan/models/*.class com/benhan/database/*.class com/benhan/ui/*.class
     cd ..
     
-    # Extract SQLite JDBC into bin
+    # Extract SQLite JDBC and SLF4J into bin
     cd bin
     jar xf ../lib/sqlite-jdbc-3.45.0.0.jar
+    jar xf ../lib/slf4j-api-2.0.9.jar
+    jar xf ../lib/slf4j-simple-2.0.9.jar
     rm -rf META-INF
     cd ..
     
