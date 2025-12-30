@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Patient {
+    public static final int SEX_MALE = 1;
+    public static final int SEX_FEMALE = 2;
+    
     private String id;              // Mã số bệnh nhân
     private String name;            // Họ tên
     private String birth;           // Ngày sinh

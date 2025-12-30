@@ -242,7 +242,7 @@ public class Frame2 extends JFrame {
         if (patient.getName() != null) {
             txtName.setText(patient.getName());
             txtBirth.setText(patient.getBirth() != null ? patient.getBirth() : "");
-            cmbSex.setSelectedIndex(patient.getSex() == 1 ? 0 : 1);
+            cmbSex.setSelectedIndex(patient.getSex() == Patient.SEX_MALE ? 0 : 1);
             txtBhyt.setText(patient.getBhyt() != null ? patient.getBhyt() : "");
             txtBhytFrom.setText(patient.getBhytFrom() != null ? patient.getBhytFrom() : "");
             txtBhytTo.setText(patient.getBhytTo() != null ? patient.getBhytTo() : "");
@@ -289,7 +289,7 @@ public class Frame2 extends JFrame {
     private void savePatient() {
         patient.setName(txtName.getText().trim());
         patient.setBirth(txtBirth.getText().trim());
-        patient.setSex(cmbSex.getSelectedIndex() + 1);
+        patient.setSex(cmbSex.getSelectedIndex() == 0 ? Patient.SEX_MALE : Patient.SEX_FEMALE);
         patient.setBhyt(txtBhyt.getText().trim());
         patient.setBhytFrom(txtBhytFrom.getText().trim());
         patient.setBhytTo(txtBhytTo.getText().trim());

@@ -68,7 +68,11 @@ public class DieuTri {
     
     public int getMonth() {
         if (date != null && date.length() >= 7) {
-            return Integer.parseInt(date.substring(5, 7));
+            try {
+                return Integer.parseInt(date.substring(5, 7));
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                return 0;
+            }
         }
         return 0;
     }
