@@ -1,0 +1,171 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     BenhAnDienTu Application Architecture                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            USER INTERFACE LAYER                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌─────────────┐       ┌─────────────┐       ┌─────────────┐               │
+│  │   Frame1    │──────>│   Frame2    │──────>│   Frame3    │               │
+│  │   Search    │       │  Patient    │       │  Monthly    │               │
+│  │   Patient   │       │   Info      │       │  Records    │               │
+│  └─────────────┘       └─────────────┘       └─────────────┘               │
+│                             │                       │                        │
+│                             │ Month                 │ Date                   │
+│                             │ Buttons               │ Buttons                │
+│                             ▼                       ▼                        │
+│                     ┌─────────────┐       ┌─────────────┐                   │
+│                     │   Frame4    │──────>│   Frame5    │                   │
+│                     │   Daily     │       │ Treatment   │                   │
+│                     │  Timeline   │       │  Details    │                   │
+│                     └─────────────┘       └─────────────┘                   │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      │ Swing Components
+                                      ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          BUSINESS LOGIC LAYER                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌─────────────────────┐              ┌─────────────────────┐               │
+│  │  BenhAnDienTu.java  │              │  DatabaseManager    │               │
+│  │  (Main Class)       │──────────────>│  (CRUD Operations)  │               │
+│  └─────────────────────┘              └─────────────────────┘               │
+│           │                                      │                           │
+│           │ Initializes                          │ Manages                   │
+│           ▼                                      ▼                           │
+│  ┌─────────────────────┐              ┌─────────────────────┐               │
+│  │   Patient Model     │              │  DieuTri Model      │               │
+│  │   - Basic Info      │              │  - Date/Time        │               │
+│  │   - Insurance       │              │  - Diễn tiến        │               │
+│  │   - Medical Data    │              │  - Y lệnh           │               │
+│  └─────────────────────┘              └─────────────────────┘               │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      │ JDBC
+                                      ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           DATA PERSISTENCE LAYER                              │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌────────────────────────────────────────────────────────────┐              │
+│  │                    SQLite Database (benhan.db)             │              │
+│  ├────────────────────────────────────────────────────────────┤              │
+│  │                                                            │              │
+│  │  ┌──────────────────┐         ┌──────────────────┐       │              │
+│  │  │  patients table  │─────────│  dieu_tri table  │       │              │
+│  │  ├──────────────────┤  1:N    ├──────────────────┤       │              │
+│  │  │ - id (PK)        │         │ - id (PK)        │       │              │
+│  │  │ - name           │         │ - patientId (FK) │       │              │
+│  │  │ - birth          │         │ - date           │       │              │
+│  │  │ - sex            │         │ - timestamp      │       │              │
+│  │  │ - bhyt           │         │ - dienTien       │       │              │
+│  │  │ - medical_info   │         │ - yLenh          │       │              │
+│  │  └──────────────────┘         └──────────────────┘       │              │
+│  │                                                            │              │
+│  └────────────────────────────────────────────────────────────┘              │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            NAVIGATION FLOW                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  START
+    │
+    ▼
+┌────────────┐
+│  Frame1    │ Enter Patient ID
+│  Search    │
+└────────────┘
+    │
+    ├──> [TÌM KIẾM] ──> Patient Found? ──Yes──> ┌────────────┐
+    │                         │                  │  Frame2    │
+    │                         No                 │  Edit Mode │
+    │                         │                  └────────────┘
+    └──> [TẠO MỚI] ─────────┴────────────────> ┌────────────┐
+                                                 │  Frame2    │
+                                                 │  New Mode  │
+                                                 └────────────┘
+                                                       │
+                                                       │ [Lưu]
+                                                       ▼
+                                                 Save to DB
+                                                       │
+                                   ┌───────────────────┴────────────────┐
+                                   │ [Tháng 1] - [Tháng 12] Buttons    │
+                                   └───────────────────┬────────────────┘
+                                                       │ Click Month
+                                                       ▼
+                                                 ┌────────────┐
+                                                 │  Frame3    │
+                                                 │  Monthly   │
+                                                 └────────────┘
+                                                       │ Click Date
+                                                       ▼
+                                                 ┌────────────┐
+                                                 │  Frame4    │
+                                                 │  Daily     │
+                                                 └────────────┘
+                                                       │ Click Time
+                                                       ▼
+                                                 ┌────────────┐
+                                                 │  Frame5    │
+                                                 │  Details   │
+                                                 └────────────┘
+                                                       │ [Lưu]
+                                                       ▼
+                                                 Save Treatment
+                                                       │
+                                                       ▼
+                                                    [Hủy bỏ]
+                                                       │
+                                                       ▼
+                                                  Back to Frame4
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          TECHNOLOGY STACK                                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Language:       Java 21
+GUI:            Java Swing (JFrame, JPanel, JButton, JTextField, etc.)
+Database:       SQLite 3.45.0.0
+JDBC Driver:    sqlite-jdbc-3.45.0.0.jar
+Logging:        SLF4J 2.0.9 (API + Simple implementation)
+Build Tool:     Shell scripts (bash for Unix, batch for Windows)
+Packaging:      JAR (13MB with dependencies)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          KEY FEATURES                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+✓ Patient Management (Create, Read, Update)
+✓ Treatment Timeline by Month/Date/Time
+✓ Vietnamese UI with UTF-8 support
+✓ SQLite database for data persistence
+✓ Cross-platform compatibility (Windows, Linux, Mac)
+✓ Standalone executable (no server required)
+✓ Comprehensive error handling
+✓ Input validation
+✓ SQL injection prevention
+✓ Modular architecture
+✓ Detailed documentation
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          BUILD & DEPLOYMENT                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Build:      ./build.sh (Unix)  or  build.bat (Windows)
+Run:        ./run.sh (Unix)    or  run.bat (Windows)
+            java -jar BenhAnDienTu.jar
+
+Output:     BenhAnDienTu.jar (13MB)
+Database:   benhan.db (created automatically)
+
+Convert to EXE:
+  - Use jpackage (Java 21+)
+  - Use Launch4j
+  - See WINDOWS_EXE_GUIDE.md
