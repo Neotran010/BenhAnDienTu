@@ -1,0 +1,42 @@
+# Compiled class files
+*.class
+bin/
+build/
+target/
+
+# JAR files (except dependencies)
+*.jar
+!lib/*.jar
+
+# Database files
+*.db
+
+# Eclipse project files
+.project
+.classpath
+.settings/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# NetBeans files
+nbproject/
+build.xml
+manifest.mf
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
