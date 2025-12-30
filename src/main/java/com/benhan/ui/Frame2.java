@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Frame2 extends JFrame {
+    // Constants for date formatting
+    private static final int TWO_DIGIT_YEAR_THRESHOLD = 50; // Years < 50 -> 2000s, >= 50 -> 1900s
+    
     // Constants for doctor names
     private static final String DEFAULT_DOCTOR = "NGUYỄN BÁ ĐỊNH";
     private static final String DOCTOR_1 = "NGÔ ĐẰNG";
@@ -332,9 +335,7 @@ public class Frame2 extends JFrame {
                     year = Integer.parseInt(parts[2]);
                     
                     // Handle 2-digit year
-                    if (year < 100) {
-                        year += (year < 50) ? 2000 : 1900;
-                    }
+                    year = convertTwoDigitYear(year);
                 }
                 
                 return String.format("%02d/%02d/%04d", day, month, year);
@@ -346,9 +347,7 @@ public class Frame2 extends JFrame {
             try {
                 int month = Integer.parseInt(parts[0]);
                 int year = Integer.parseInt(parts[1]);
-                if (year < 100) {
-                    year += (year < 50) ? 2000 : 1900;
-                }
+                year = convertTwoDigitYear(year);
                 return String.format("01/%02d/%04d", month, year);
             } catch (NumberFormatException e) {
                 return input;
@@ -356,6 +355,20 @@ public class Frame2 extends JFrame {
         }
         
         return input;
+    }
+    
+    /**
+     * Convert 2-digit year to 4-digit year.
+     * Years < 50 are treated as 2000s, >= 50 as 1900s.
+     * 
+     * @param year The year value (either 2 or 4 digits)
+     * @return The year as 4 digits
+     */
+    private int convertTwoDigitYear(int year) {
+        if (year < 100) {
+            return year + ((year < TWO_DIGIT_YEAR_THRESHOLD) ? 2000 : 1900);
+        }
+        return year;
     }
     
     private void addTimeValidation(JTextField field, int min, int max) {

@@ -84,12 +84,18 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            // Check if it's a "column already exists" error (expected and can be ignored)
-            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("duplicate column")) {
-                // Column already exists, safe to ignore
+            // SQLite doesn't have a specific error code for duplicate columns
+            // It returns a general SQL error with message containing "duplicate"
+            // This is safe to ignore as it means the column already exists
+            String errorMsg = e.getMessage();
+            if (errorMsg != null && 
+                (errorMsg.toLowerCase().contains("duplicate") || 
+                 errorMsg.toLowerCase().contains("already exists"))) {
+                // Column already exists, this is expected and safe to ignore
             } else {
-                // Unexpected error, print for debugging
-                System.err.println("Warning: Could not add column " + columnName + ": " + e.getMessage());
+                // Unexpected error, log it for debugging but don't crash
+                System.err.println("Warning: Could not add column " + columnName + 
+                                 " to table " + tableName + ": " + errorMsg);
             }
         }
     }
