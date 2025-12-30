@@ -15,6 +15,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Frame2 extends JFrame {
+    // Constants for doctor names
+    private static final String DEFAULT_DOCTOR = "NGUYỄN BÁ ĐỊNH";
+    private static final String DOCTOR_1 = "NGÔ ĐẰNG";
+    private static final String DOCTOR_2 = "POA DAM THƯƠNG";
+    private static final String DOCTOR_3 = "NGUYỄN TRƯỜNG DUY";
+    
     private DatabaseManager dbManager;
     private Patient patient;
     private boolean isNewPatient;
@@ -389,16 +395,16 @@ public class Frame2 extends JFrame {
                 if (text.length() == 1 && Character.isDigit(text.charAt(0))) {
                     switch (text) {
                         case "1":
-                            field.setText("NGÔ ĐẰNG");
+                            field.setText(DOCTOR_1);
                             break;
                         case "2":
-                            field.setText("POA DAM THƯƠNG");
+                            field.setText(DOCTOR_2);
                             break;
                         case "3":
-                            field.setText("NGUYỄN TRƯỜNG DUY");
+                            field.setText(DOCTOR_3);
                             break;
                         case "0":
-                            field.setText("NGUYỄN BÁ ĐỊNH");
+                            field.setText(DEFAULT_DOCTOR);
                             break;
                     }
                 }
@@ -411,7 +417,7 @@ public class Frame2 extends JFrame {
                 String text = field.getText().trim();
                 // If empty on focus lost, set default
                 if (text.isEmpty()) {
-                    field.setText("NGUYỄN BÁ ĐỊNH");
+                    field.setText(DEFAULT_DOCTOR);
                 }
             }
         });
@@ -430,10 +436,18 @@ public class Frame2 extends JFrame {
             // Parse time from "HH giờ mm phút" format
             String gioNhapVien = patient.getGioNhapVien();
             if (gioNhapVien != null && !gioNhapVien.isEmpty()) {
-                String[] timeParts = gioNhapVien.split(" giờ | phút");
-                if (timeParts.length >= 2) {
-                    txtGioNhapVienHour.setText(timeParts[0]);
-                    txtGioNhapVienMinute.setText(timeParts[1]);
+                // Parse format: "HH giờ mm phút"
+                int gioIndex = gioNhapVien.indexOf(" giờ");
+                int phutIndex = gioNhapVien.indexOf(" phút");
+                
+                if (gioIndex > 0) {
+                    String hour = gioNhapVien.substring(0, gioIndex).trim();
+                    txtGioNhapVienHour.setText(hour);
+                    
+                    if (phutIndex > gioIndex) {
+                        String minute = gioNhapVien.substring(gioIndex + 5, phutIndex).trim();
+                        txtGioNhapVienMinute.setText(minute);
+                    }
                 }
             }
             
@@ -557,11 +571,18 @@ public class Frame2 extends JFrame {
         patient.setCanNang(txtCanNang.getText().trim());
         
         // Also save to vitalSigns for backward compatibility
-        String vitalSigns = String.join(", ", 
-            txtMach.getText().trim(),
-            txtHuyetAp.getText().trim(),
-            txtCanNang.getText().trim()
-        );
+        // Only include non-empty values
+        java.util.List<String> vitalsList = new java.util.ArrayList<>();
+        if (!txtMach.getText().trim().isEmpty()) {
+            vitalsList.add(txtMach.getText().trim());
+        }
+        if (!txtHuyetAp.getText().trim().isEmpty()) {
+            vitalsList.add(txtHuyetAp.getText().trim());
+        }
+        if (!txtCanNang.getText().trim().isEmpty()) {
+            vitalsList.add(txtCanNang.getText().trim());
+        }
+        String vitalSigns = String.join(", ", vitalsList);
         patient.setVitalSigns(vitalSigns);
         
         patient.setChanDoanChinh(txtChanDoanChinh.getText().trim());

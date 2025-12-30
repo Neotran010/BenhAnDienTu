@@ -80,10 +80,17 @@ public class DatabaseManager {
                 String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType;
                 try (Statement stmt = connection.createStatement()) {
                     stmt.execute(sql);
+                    System.out.println("Added column: " + columnName + " to table: " + tableName);
                 }
             }
         } catch (SQLException e) {
-            // Column might already exist or other error
+            // Check if it's a "column already exists" error (expected and can be ignored)
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("duplicate column")) {
+                // Column already exists, safe to ignore
+            } else {
+                // Unexpected error, print for debugging
+                System.err.println("Warning: Could not add column " + columnName + ": " + e.getMessage());
+            }
         }
     }
     
