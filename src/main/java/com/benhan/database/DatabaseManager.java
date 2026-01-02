@@ -34,11 +34,15 @@ public class DatabaseManager {
                 "bhyt TEXT," +
                 "bhytFrom TEXT," +
                 "bhytTo TEXT," +
+                "ngayNhapVien TEXT," +
                 "gioNhapVien TEXT," +
                 "lyDoNhapVien TEXT," +
                 "quaTrinhBenhLy TEXT," +
                 "tienSuBenh TEXT," +
                 "vitalSigns TEXT," +
+                "mach TEXT," +
+                "huyetAp TEXT," +
+                "canNang TEXT," +
                 "chanDoanChinh TEXT," +
                 "chanDoanPhu TEXT," +
                 "bacSiDieuTri TEXT" +
@@ -57,8 +61,43 @@ public class DatabaseManager {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(patientTable);
             stmt.execute(dieuTriTable);
+            
+            // Add new columns if they don't exist (migration)
+            addColumnIfNotExists("patients", "ngayNhapVien", "TEXT");
+            addColumnIfNotExists("patients", "mach", "TEXT");
+            addColumnIfNotExists("patients", "huyetAp", "TEXT");
+            addColumnIfNotExists("patients", "canNang", "TEXT");
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    private void addColumnIfNotExists(String tableName, String columnName, String columnType) {
+        try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet columns = metaData.getColumns(null, null, tableName, columnName);
+            if (!columns.next()) {
+                String sql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + columnType;
+                try (Statement stmt = connection.createStatement()) {
+                    stmt.execute(sql);
+                    System.out.println("Added column: " + columnName + " to table: " + tableName);
+                }
+            }
+        } catch (SQLException e) {
+            // SQLite doesn't have a specific error code for duplicate columns
+            // It returns a general SQL error with message containing "duplicate"
+            // This is safe to ignore as it means the column already exists
+            String errorMsg = e.getMessage();
+            if (errorMsg != null) {
+                String lowerMsg = errorMsg.toLowerCase();
+                if (lowerMsg.contains("duplicate") || lowerMsg.contains("already exists")) {
+                    // Column already exists, this is expected and safe to ignore
+                    return;
+                }
+                // Unexpected error, log it for debugging but don't crash
+                System.err.println("Warning: Could not add column " + columnName + 
+                                 " to table " + tableName + ": " + errorMsg);
+            }
         }
     }
     
@@ -77,11 +116,15 @@ public class DatabaseManager {
                 patient.setBhyt(rs.getString("bhyt"));
                 patient.setBhytFrom(rs.getString("bhytFrom"));
                 patient.setBhytTo(rs.getString("bhytTo"));
+                patient.setNgayNhapVien(rs.getString("ngayNhapVien"));
                 patient.setGioNhapVien(rs.getString("gioNhapVien"));
                 patient.setLyDoNhapVien(rs.getString("lyDoNhapVien"));
                 patient.setQuaTrinhBenhLy(rs.getString("quaTrinhBenhLy"));
                 patient.setTienSuBenh(rs.getString("tienSuBenh"));
                 patient.setVitalSigns(rs.getString("vitalSigns"));
+                patient.setMach(rs.getString("mach"));
+                patient.setHuyetAp(rs.getString("huyetAp"));
+                patient.setCanNang(rs.getString("canNang"));
                 patient.setChanDoanChinh(rs.getString("chanDoanChinh"));
                 patient.setChanDoanPhu(rs.getString("chanDoanPhu"));
                 patient.setBacSiDieuTri(rs.getString("bacSiDieuTri"));
@@ -107,8 +150,9 @@ public class DatabaseManager {
     
     private boolean insertPatient(Patient patient) {
         String sql = "INSERT INTO patients (id, name, birth, sex, bhyt, bhytFrom, bhytTo, " +
-                "gioNhapVien, lyDoNhapVien, quaTrinhBenhLy, tienSuBenh, vitalSigns, " +
-                "chanDoanChinh, chanDoanPhu, bacSiDieuTri) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "ngayNhapVien, gioNhapVien, lyDoNhapVien, quaTrinhBenhLy, tienSuBenh, vitalSigns, " +
+                "mach, huyetAp, canNang, chanDoanChinh, chanDoanPhu, bacSiDieuTri) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, patient.getId());
@@ -118,14 +162,18 @@ public class DatabaseManager {
             pstmt.setString(5, patient.getBhyt());
             pstmt.setString(6, patient.getBhytFrom());
             pstmt.setString(7, patient.getBhytTo());
-            pstmt.setString(8, patient.getGioNhapVien());
-            pstmt.setString(9, patient.getLyDoNhapVien());
-            pstmt.setString(10, patient.getQuaTrinhBenhLy());
-            pstmt.setString(11, patient.getTienSuBenh());
-            pstmt.setString(12, patient.getVitalSigns());
-            pstmt.setString(13, patient.getChanDoanChinh());
-            pstmt.setString(14, patient.getChanDoanPhu());
-            pstmt.setString(15, patient.getBacSiDieuTri());
+            pstmt.setString(8, patient.getNgayNhapVien());
+            pstmt.setString(9, patient.getGioNhapVien());
+            pstmt.setString(10, patient.getLyDoNhapVien());
+            pstmt.setString(11, patient.getQuaTrinhBenhLy());
+            pstmt.setString(12, patient.getTienSuBenh());
+            pstmt.setString(13, patient.getVitalSigns());
+            pstmt.setString(14, patient.getMach());
+            pstmt.setString(15, patient.getHuyetAp());
+            pstmt.setString(16, patient.getCanNang());
+            pstmt.setString(17, patient.getChanDoanChinh());
+            pstmt.setString(18, patient.getChanDoanPhu());
+            pstmt.setString(19, patient.getBacSiDieuTri());
             
             pstmt.executeUpdate();
             return true;
@@ -137,8 +185,8 @@ public class DatabaseManager {
     
     private boolean updatePatient(Patient patient) {
         String sql = "UPDATE patients SET name=?, birth=?, sex=?, bhyt=?, bhytFrom=?, bhytTo=?, " +
-                "gioNhapVien=?, lyDoNhapVien=?, quaTrinhBenhLy=?, tienSuBenh=?, vitalSigns=?, " +
-                "chanDoanChinh=?, chanDoanPhu=?, bacSiDieuTri=? WHERE id=?";
+                "ngayNhapVien=?, gioNhapVien=?, lyDoNhapVien=?, quaTrinhBenhLy=?, tienSuBenh=?, vitalSigns=?, " +
+                "mach=?, huyetAp=?, canNang=?, chanDoanChinh=?, chanDoanPhu=?, bacSiDieuTri=? WHERE id=?";
         
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, patient.getName());
@@ -147,15 +195,19 @@ public class DatabaseManager {
             pstmt.setString(4, patient.getBhyt());
             pstmt.setString(5, patient.getBhytFrom());
             pstmt.setString(6, patient.getBhytTo());
-            pstmt.setString(7, patient.getGioNhapVien());
-            pstmt.setString(8, patient.getLyDoNhapVien());
-            pstmt.setString(9, patient.getQuaTrinhBenhLy());
-            pstmt.setString(10, patient.getTienSuBenh());
-            pstmt.setString(11, patient.getVitalSigns());
-            pstmt.setString(12, patient.getChanDoanChinh());
-            pstmt.setString(13, patient.getChanDoanPhu());
-            pstmt.setString(14, patient.getBacSiDieuTri());
-            pstmt.setString(15, patient.getId());
+            pstmt.setString(7, patient.getNgayNhapVien());
+            pstmt.setString(8, patient.getGioNhapVien());
+            pstmt.setString(9, patient.getLyDoNhapVien());
+            pstmt.setString(10, patient.getQuaTrinhBenhLy());
+            pstmt.setString(11, patient.getTienSuBenh());
+            pstmt.setString(12, patient.getVitalSigns());
+            pstmt.setString(13, patient.getMach());
+            pstmt.setString(14, patient.getHuyetAp());
+            pstmt.setString(15, patient.getCanNang());
+            pstmt.setString(16, patient.getChanDoanChinh());
+            pstmt.setString(17, patient.getChanDoanPhu());
+            pstmt.setString(18, patient.getBacSiDieuTri());
+            pstmt.setString(19, patient.getId());
             
             pstmt.executeUpdate();
             return true;

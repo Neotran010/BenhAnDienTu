@@ -14,11 +14,15 @@ public class Patient {
     private String bhyt;            // Số BHYT
     private String bhytFrom;        // BHYT từ ngày
     private String bhytTo;          // BHYT đến ngày
+    private String ngayNhapVien;    // Ngày nhập viện
     private String gioNhapVien;     // Giờ nhập viện
     private String lyDoNhapVien;    // Lý do nhập viện
     private String quaTrinhBenhLy;  // Quá trình bệnh lý
     private String tienSuBenh;      // Tiền sử bệnh
-    private String vitalSigns;      // Mạch, huyết áp, cân nặng
+    private String vitalSigns;      // Mạch, huyết áp, cân nặng (deprecated, kept for compatibility)
+    private String mach;            // Mạch
+    private String huyetAp;         // Huyết áp
+    private String canNang;         // Cân nặng
     private String chanDoanChinh;   // Chẩn đoán chính
     private String chanDoanPhu;     // Chẩn đoán phụ
     private String bacSiDieuTri;    // Bác sĩ điều trị
@@ -160,5 +164,37 @@ public class Patient {
     
     public void setToDieuTri(List<DieuTri> toDieuTri) {
         this.toDieuTri = toDieuTri;
+    }
+    
+    public String getNgayNhapVien() {
+        return ngayNhapVien;
+    }
+    
+    public void setNgayNhapVien(String ngayNhapVien) {
+        this.ngayNhapVien = ngayNhapVien;
+    }
+    
+    public String getMach() {
+        return mach;
+    }
+    
+    public void setMach(String mach) {
+        this.mach = mach;
+    }
+    
+    public String getHuyetAp() {
+        return huyetAp;
+    }
+    
+    public void setHuyetAp(String huyetAp) {
+        this.huyetAp = huyetAp;
+    }
+    
+    public String getCanNang() {
+        return canNang;
+    }
+    
+    public void setCanNang(String canNang) {
+        this.canNang = canNang;
     }
 }
