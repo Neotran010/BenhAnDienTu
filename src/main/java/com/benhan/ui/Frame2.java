@@ -518,7 +518,8 @@ public class Frame2 extends JFrame {
         for (int i = 1; i <= 12; i++) {
             final int month = i;
             JButton btnMonth = new JButton("Tháng " + i);
-            btnMonth.setFont(new Font("Arial", Font.PLAIN, 12));
+            btnMonth.setFont(new Font("Arial", Font.PLAIN, 10));
+            btnMonth.setPreferredSize(new Dimension(80, 25));
             
             if (availableMonths.contains(i)) {
                 btnMonth.setEnabled(true);
