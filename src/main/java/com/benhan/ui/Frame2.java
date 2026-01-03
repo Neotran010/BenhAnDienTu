@@ -149,6 +149,7 @@ public class Frame2 extends JFrame {
         txtLyDoNhapVien = new JTextArea(1, 20);
         txtLyDoNhapVien.setLineWrap(true);
         txtLyDoNhapVien.setWrapStyleWord(true);
+        enableTabNavigation(txtLyDoNhapVien);
         JScrollPane scrollLyDo = new JScrollPane(txtLyDoNhapVien);
         scrollLyDo.setPreferredSize(new Dimension(0, 35));
         infoPanel.add(scrollLyDo, gbc);
@@ -163,6 +164,7 @@ public class Frame2 extends JFrame {
         txtQuaTrinhBenhLy = new JTextArea(2, 20);
         txtQuaTrinhBenhLy.setLineWrap(true);
         txtQuaTrinhBenhLy.setWrapStyleWord(true);
+        enableTabNavigation(txtQuaTrinhBenhLy);
         JScrollPane scrollQuaTrinh = new JScrollPane(txtQuaTrinhBenhLy);
         infoPanel.add(scrollQuaTrinh, gbc);
         gbc.gridwidth = 1;
@@ -176,6 +178,7 @@ public class Frame2 extends JFrame {
         txtTienSuBenh = new JTextArea(2, 20);
         txtTienSuBenh.setLineWrap(true);
         txtTienSuBenh.setWrapStyleWord(true);
+        enableTabNavigation(txtTienSuBenh);
         JScrollPane scrollTienSu = new JScrollPane(txtTienSuBenh);
         infoPanel.add(scrollTienSu, gbc);
         gbc.gridwidth = 1;
@@ -208,6 +211,7 @@ public class Frame2 extends JFrame {
         txtChanDoanChinh = new JTextArea(2, 20);
         txtChanDoanChinh.setLineWrap(true);
         txtChanDoanChinh.setWrapStyleWord(true);
+        enableTabNavigation(txtChanDoanChinh);
         JScrollPane scrollChanDoan = new JScrollPane(txtChanDoanChinh);
         infoPanel.add(scrollChanDoan, gbc);
         gbc.gridwidth = 1;
@@ -221,6 +225,7 @@ public class Frame2 extends JFrame {
         txtChanDoanPhu = new JTextArea(2, 20);
         txtChanDoanPhu.setLineWrap(true);
         txtChanDoanPhu.setWrapStyleWord(true);
+        enableTabNavigation(txtChanDoanPhu);
         JScrollPane scrollChanDoanPhu = new JScrollPane(txtChanDoanPhu);
         infoPanel.add(scrollChanDoanPhu, gbc);
         gbc.gridwidth = 1;
@@ -297,6 +302,12 @@ public class Frame2 extends JFrame {
                 }
             }
         });
+    }
+    
+    private void enableTabNavigation(JTextArea textArea) {
+        // Allow Tab key to move focus to next component instead of inserting tab character
+        textArea.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+        textArea.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
     }
     
     private String formatDate(String input) {
@@ -498,7 +509,7 @@ public class Frame2 extends JFrame {
     
     private void createMonthButtons() {
         Set<Integer> availableMonths = new HashSet<>();
-        if (patient.getToDieuTri() != null) {
+        if (patient != null && patient.getToDieuTri() != null) {
             for (DieuTri dt : patient.getToDieuTri()) {
                 availableMonths.add(dt.getMonth());
             }
@@ -625,6 +636,14 @@ public class Frame2 extends JFrame {
     }
     
     private void addNewTreatmentRecord() {
+        // Ensure patient is not null
+        if (patient == null) {
+            JOptionPane.showMessageDialog(this,
+                "Lỗi: Thông tin bệnh nhân không hợp lệ!",
+                "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         String ngayNhapVien = txtNgayNhapVien.getText().trim();
         
         if (ngayNhapVien.isEmpty()) {
@@ -638,6 +657,15 @@ public class Frame2 extends JFrame {
             JOptionPane.showMessageDialog(this,
                 "Ngày nhập viện không hợp lệ! Định dạng: dd/MM/yyyy",
                 "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Check if patient has been saved to database first
+        Patient existingPatient = dbManager.findPatientById(patient.getId());
+        if (existingPatient == null) {
+            JOptionPane.showMessageDialog(this,
+                "Vui lòng lưu thông tin bệnh nhân trước khi tạo hồ sơ điều trị!",
+                "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
         
