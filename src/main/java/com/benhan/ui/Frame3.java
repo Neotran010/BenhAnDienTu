@@ -174,12 +174,9 @@ public class Frame3 extends JFrame {
                     dispose();
                     
                     // Reopen Frame3 with updated data
-                    List<DieuTri> updatedMonthRecords = new ArrayList<>();
-                    for (DieuTri dt : patient.getToDieuTri()) {
-                        if (dt.getMonth() == month) {
-                            updatedMonthRecords.add(dt);
-                        }
-                    }
+                    List<DieuTri> updatedMonthRecords = patient.getToDieuTri().stream()
+                        .filter(dt -> dt.getMonth() == month)
+                        .collect(java.util.stream.Collectors.toList());
                     Frame3 newFrame = new Frame3(dbManager, patient, month, updatedMonthRecords);
                     newFrame.setVisible(true);
                 } else {

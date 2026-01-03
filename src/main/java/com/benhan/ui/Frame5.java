@@ -165,17 +165,13 @@ public class Frame5 extends JFrame {
         // Add patient's main diagnosis
         if (patient.getChanDoanChinh() != null && !patient.getChanDoanChinh().trim().isEmpty()) {
             String mainDiag = patient.getChanDoanChinh().trim();
-            if (!mainDiag.isEmpty()) {
-                cmbChanDoan.addItem(mainDiag);
-            }
+            cmbChanDoan.addItem(mainDiag);
         }
         
         // Add patient's additional diagnosis
         if (patient.getChanDoanPhu() != null && !patient.getChanDoanPhu().trim().isEmpty()) {
             String addDiag = patient.getChanDoanPhu().trim();
-            if (!addDiag.isEmpty()) {
-                cmbChanDoan.addItem(addDiag);
-            }
+            cmbChanDoan.addItem(addDiag);
         }
         
         // Add combined diagnosis if both exist
