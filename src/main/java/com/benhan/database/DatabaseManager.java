@@ -55,6 +55,8 @@ public class DatabaseManager {
                 "timestamp TEXT," +
                 "dienTien TEXT," +
                 "yLenh TEXT," +
+                "chanDoan TEXT," +
+                "bacSiDieuTri TEXT," +
                 "FOREIGN KEY(patientId) REFERENCES patients(id)" +
                 ")";
         
@@ -67,6 +69,8 @@ public class DatabaseManager {
             addColumnIfNotExists("patients", "mach", "TEXT");
             addColumnIfNotExists("patients", "huyetAp", "TEXT");
             addColumnIfNotExists("patients", "canNang", "TEXT");
+            addColumnIfNotExists("dieu_tri", "chanDoan", "TEXT");
+            addColumnIfNotExists("dieu_tri", "bacSiDieuTri", "TEXT");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -233,6 +237,8 @@ public class DatabaseManager {
                 dt.setTimestamp(rs.getString("timestamp"));
                 dt.setDienTien(rs.getString("dienTien"));
                 dt.setYLenh(rs.getString("yLenh"));
+                dt.setChanDoan(rs.getString("chanDoan"));
+                dt.setBacSiDieuTri(rs.getString("bacSiDieuTri"));
                 list.add(dt);
             }
         } catch (SQLException e) {
@@ -250,7 +256,7 @@ public class DatabaseManager {
     }
     
     private boolean insertDieuTri(DieuTri dieuTri) {
-        String sql = "INSERT INTO dieu_tri (patientId, date, timestamp, dienTien, yLenh) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO dieu_tri (patientId, date, timestamp, dienTien, yLenh, chanDoan, bacSiDieuTri) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, dieuTri.getPatientId());
@@ -258,6 +264,8 @@ public class DatabaseManager {
             pstmt.setString(3, dieuTri.getTimestamp());
             pstmt.setString(4, dieuTri.getDienTien());
             pstmt.setString(5, dieuTri.getYLenh());
+            pstmt.setString(6, dieuTri.getChanDoan());
+            pstmt.setString(7, dieuTri.getBacSiDieuTri());
             
             pstmt.executeUpdate();
             return true;
@@ -268,7 +276,7 @@ public class DatabaseManager {
     }
     
     private boolean updateDieuTri(DieuTri dieuTri) {
-        String sql = "UPDATE dieu_tri SET patientId=?, date=?, timestamp=?, dienTien=?, yLenh=? WHERE id=?";
+        String sql = "UPDATE dieu_tri SET patientId=?, date=?, timestamp=?, dienTien=?, yLenh=?, chanDoan=?, bacSiDieuTri=? WHERE id=?";
         
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, dieuTri.getPatientId());
@@ -276,7 +284,9 @@ public class DatabaseManager {
             pstmt.setString(3, dieuTri.getTimestamp());
             pstmt.setString(4, dieuTri.getDienTien());
             pstmt.setString(5, dieuTri.getYLenh());
-            pstmt.setInt(6, dieuTri.getId());
+            pstmt.setString(6, dieuTri.getChanDoan());
+            pstmt.setString(7, dieuTri.getBacSiDieuTri());
+            pstmt.setInt(8, dieuTri.getId());
             
             pstmt.executeUpdate();
             return true;

@@ -7,6 +7,8 @@ public class DieuTri {
     private String timestamp;       // Timestamp (YYYY-MM-DD HH:MM:SS)
     private String dienTien;        // Diễn tiến
     private String yLenh;           // Y lệnh
+    private String chanDoan;        // Chẩn đoán
+    private String bacSiDieuTri;    // Bác sĩ điều trị
     
     public DieuTri() {
     }
@@ -64,6 +66,22 @@ public class DieuTri {
     
     public void setYLenh(String yLenh) {
         this.yLenh = yLenh;
+    }
+    
+    public String getChanDoan() {
+        return chanDoan;
+    }
+    
+    public void setChanDoan(String chanDoan) {
+        this.chanDoan = chanDoan;
+    }
+    
+    public String getBacSiDieuTri() {
+        return bacSiDieuTri;
+    }
+    
+    public void setBacSiDieuTri(String bacSiDieuTri) {
+        this.bacSiDieuTri = bacSiDieuTri;
     }
     
     public int getMonth() {
