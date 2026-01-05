@@ -673,10 +673,22 @@ public class Frame2 extends JFrame {
         // Convert dd/MM/yyyy to yyyy-MM-dd for database
         String dbDate = convertToDbDate(ngayNhapVien);
         
-        // Get current time
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String timestamp = now.format(formatter);
+        // Get admission time from text fields
+        String hourStr = txtGioNhapVienHour.getText().trim();
+        String minuteStr = txtGioNhapVienMinute.getText().trim();
+        
+        // Create timestamp using ngayNhapVien + admission hour and minute
+        String timestamp;
+        if (!hourStr.isEmpty() && !minuteStr.isEmpty()) {
+            // Use admission time
+            timestamp = dbDate + " " + String.format("%02d:%02d:00", 
+                Integer.parseInt(hourStr), Integer.parseInt(minuteStr));
+        } else {
+            // Fallback to current time if admission time is not set
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            timestamp = now.format(formatter);
+        }
         
         // Create new treatment record
         DieuTri newDieuTri = new DieuTri(patient.getId(), dbDate, timestamp);
