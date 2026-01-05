@@ -44,8 +44,8 @@ public class Frame4 extends JFrame {
         
         for (DieuTri dt : dateRecords) {
             JButton btnTimestamp = new JButton(dt.getTimestamp());
-            btnTimestamp.setFont(new Font("Arial", Font.PLAIN, 12));
-            btnTimestamp.setPreferredSize(new Dimension(200, 40));
+            btnTimestamp.setFont(new Font("Arial", Font.PLAIN, 10));
+            btnTimestamp.setPreferredSize(new Dimension(150, 30));
             btnTimestamp.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -57,7 +57,7 @@ public class Frame4 extends JFrame {
         
         // Add new treatment button
         JButton btnAddNew = new JButton("+ Thêm điều trị mới");
-        btnAddNew.setFont(new Font("Arial", Font.BOLD, 12));
+        btnAddNew.setFont(new Font("Arial", Font.BOLD, 10));
         btnAddNew.setBackground(new Color(100, 200, 100));
         btnAddNew.addActionListener(new ActionListener() {
             @Override

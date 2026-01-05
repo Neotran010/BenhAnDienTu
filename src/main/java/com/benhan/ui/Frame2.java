@@ -673,10 +673,39 @@ public class Frame2 extends JFrame {
         // Convert dd/MM/yyyy to yyyy-MM-dd for database
         String dbDate = convertToDbDate(ngayNhapVien);
         
-        // Get current time
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String timestamp = now.format(formatter);
+        // Get admission time from text fields
+        String hourStr = txtGioNhapVienHour.getText().trim();
+        String minuteStr = txtGioNhapVienMinute.getText().trim();
+        
+        // Create timestamp using ngayNhapVien + admission hour and minute
+        String timestamp;
+        if (!hourStr.isEmpty() && !minuteStr.isEmpty()) {
+            try {
+                int hour = Integer.parseInt(hourStr);
+                int minute = Integer.parseInt(minuteStr);
+                
+                // Validate ranges
+                if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+                    JOptionPane.showMessageDialog(this,
+                        "Giờ nhập viện không hợp lệ! Giờ phải từ 0-23, phút phải từ 0-59.",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Use admission time
+                timestamp = dbDate + " " + String.format("%02d:%02d:00", hour, minute);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Giờ nhập viện không hợp lệ! Vui lòng nhập số.",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } else {
+            // Fallback to current time if admission time is not set
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            timestamp = now.format(formatter);
+        }
         
         // Create new treatment record
         DieuTri newDieuTri = new DieuTri(patient.getId(), dbDate, timestamp);

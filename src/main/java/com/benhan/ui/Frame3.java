@@ -58,8 +58,8 @@ public class Frame3 extends JFrame {
             final List<DieuTri> dateRecords = entry.getValue();
             
             JButton btnDate = new JButton(date);
-            btnDate.setFont(new Font("Arial", Font.PLAIN, 12));
-            btnDate.setPreferredSize(new Dimension(150, 40));
+            btnDate.setFont(new Font("Arial", Font.PLAIN, 10));
+            btnDate.setPreferredSize(new Dimension(120, 30));
             btnDate.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -71,9 +71,9 @@ public class Frame3 extends JFrame {
         
         // Add "Thêm Mới" button
         JButton btnAddNew = new JButton("Thêm Mới");
-        btnAddNew.setFont(new Font("Arial", Font.BOLD, 12));
+        btnAddNew.setFont(new Font("Arial", Font.BOLD, 10));
         btnAddNew.setBackground(new Color(100, 200, 100));
-        btnAddNew.setPreferredSize(new Dimension(150, 40));
+        btnAddNew.setPreferredSize(new Dimension(120, 30));
         btnAddNew.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
